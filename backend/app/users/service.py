@@ -1,0 +1,44 @@
+from odmantic import AIOEngine
+from app.users.models import User
+from .schemas import UserCreate
+from fastapi import HTTPException
+import logging
+from datetime import datetime, timedelta
+from random import randint
+
+
+logger = logging.getLogger(__name__)
+
+
+async def create_user(engine: AIOEngine, userCreate: UserCreate) -> User:
+    
+    verification_code = f"{randint(0, 999999):06d}"
+
+    try:
+        user = User(
+            username = userCreate.username,
+            email = userCreate.email,
+            password = userCreate.password,
+            age = userCreate.age,
+            is_active = True,
+            verification_code = verification_code,
+            verification_code_expires = datetime.now() + timedelta(minutes = 180)
+
+        )
+        await engine.save(user)
+        return user
+    except Exception as e:
+        logger.exception("Ошибка при создании пользователя")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
+async def get_user_by_email(engine: AIOEngine, email: str) -> User | None:
+    return await engine.find_one(User, User.email == email)
+
+
+async def get_all_users(engine: AIOEngine) -> list[User]:
+    return await engine.find(User)
+
+
+async def get_user_by_username(engine: AIOEngine, username: str) -> User | None:
+    return await engine.find_one(User, User.username == username)

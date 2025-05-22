@@ -1,0 +1,38 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# VSCode / PyCharm
+.vscode/
+.idea/
+
+# Virtual envs
+venv/
+env/
+.venv/
+
+# macOS системные файлы
+.DS_Store
+
+# dotenv configs (в проде и в разработке)
+.env
+.env.production
+#.env.development
+
+# Logs
+*.log
+
+# Admin-related cache (если вдруг)
+*.sqlite3
+
+# Optional: compiled FastAPI Admin static (если будет)
+static/admin/
+
+# Optional: coverage / testing / pip
+.coverage
+.tox/
+.cache/
+pip-wheel-metadata/
+
+nado.txt
