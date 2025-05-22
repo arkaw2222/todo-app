@@ -13,4 +13,4 @@ class JWTPayload(BaseModel):
 
 
 class Code(BaseModel):
-    code: int
+    code: str

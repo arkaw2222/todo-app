@@ -12,13 +12,15 @@ from app.tasks.models import Task
 
 router = APIRouter(prefix="/tasks", tags=["Tasks"])
 
-@router.post("/")
+@router.post("/", response_model = TaskRead)
 async def create_task(
     data: schemas.TaskCreate,
     engine: AIOEngine = Depends(get_engine),
     user: User = Depends(current_user)
-) -> models.Task:
-    return await service.create_task(engine, data, user)
+) -> dict:
+    task = await service.create_task(engine, data, user)
+    task = task.serialize()
+    return task
 
 
 @router.get("/")

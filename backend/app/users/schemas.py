@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr, field_validator
 from typing import Optional
+from app.users.models import User
 
 
 class UserCreate(BaseModel):
@@ -45,5 +46,5 @@ class UserRef(BaseModel):
     username: str
 
     @classmethod
-    def from_user(cls, user):
+    def from_user(cls, user: User) -> 'UserRef':
         return cls(id=str(user.id), username=user.username)
