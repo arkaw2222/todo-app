@@ -22,7 +22,7 @@ async def create_user(engine: AIOEngine, userCreate: UserCreate) -> User:
             age = userCreate.age,
             is_active = True,
             verification_code = verification_code,
-            verification_code_expires = datetime.now() + timedelta(minutes = 180)
+            verification_code_expires = datetime.now() + timedelta(minutes = 60)
 
         )
         await engine.save(user)

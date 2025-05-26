@@ -20,4 +20,10 @@ class User(Model):
             "id": str(self.id),
             "username": self.username,
             "email": self.email,
+            "age": self.age,
+            "is_verified": self.is_verified,
+            "verification_code": self.verification_code,
+            "verification_code_expires": self.verification_code_expires,
+            "is_active": self.is_active,
+            "password": self.password
         }
