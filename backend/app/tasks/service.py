@@ -77,3 +77,44 @@ async def delete_task(engine: AIOEngine, task_id: str, current_user: User) -> No
     except Exception as e:
         logger.exception("Internal Server Error")
         raise HTTPException(status_code=500, detail="Internal Server Error")
+
+async def provide_read(engine: AIOEngine, current_user: User, task_id: str, users: set):
+    try:
+        task = await engine.find_one(Task, Task.id == ObjectId(task_id))
+
+        if not task:
+            raise HTTPException(404, 'Task not found')
+        if task.created_by != current_user:
+            raise HTTPException(403, 'Permission denied')
+        if users.issubset(task.perm_read):
+            raise HTTPException(422, 'Already provided')
+        
+        task.perms_read.update(users)
+
+    except Exception as e:
+        logger.exception('Internal Server Error')
+        raise HTTPException(500, 'Internal Server Error')
+
+async def provide_edit(engine: AIOEngine, current_user: User, task_id: str, users: set):
+    try:
+        task = await engine.find_one(Task, Task.id == ObjectId(task_id))
+
+        if not task:
+            raise HTTPException(404, 'Task not found')
+        if task.created_by != current_user:
+            raise HTTPException(403, 'Permission denied')
+        if users.issubset(task.perm_edit):
+            raise HTTPException(422, 'Already provided')
+        
+        task.perms_edit.update(users)
+
+    except Exception as e:
+        logger.exception('Internal Server Error')
+        raise HTTPException(500, 'Internal Server Error')
+
+
+    
+
+
+
+
