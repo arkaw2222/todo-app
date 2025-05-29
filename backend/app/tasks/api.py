@@ -5,7 +5,7 @@ from app.core.db import get_engine
 from app.tasks import service, schemas, models
 from typing import Optional
 from app.users.models import User
-from app.tasks.schemas import TaskRead, TaskEdit
+from app.tasks.schemas import TaskRead, TaskEdit, TaskPerms
 from app.tasks.models import Task
 
 
@@ -32,7 +32,7 @@ async def list_tasks_by_status(completed: Optional[bool] = Query(None), engine: 
     # return service.get_all_tasks(engine) #возвращать выполненные
 
 
-@router.patch("/{task_id}", response_model=TaskRead)
+@router.patch("/{task_id}/edit", response_model=TaskRead)
 async def edit_task(
     task_id: str,
     data: TaskEdit,
@@ -49,3 +49,22 @@ async def delete_task(
     user: User = Depends(current_user)
 ):
     await service.delete_task(engine, task_id, user)
+
+
+@router.patch('/{task_id}/provide_read', response_model = TaskPerms)
+async def provide_read_permission(
+    task_id: str,
+    users: set,
+    user: User = Depends(current_user),
+    engine: AIOEngine = Depends(get_engine)
+):
+    await service.provide_read(engine, user, task_id, users)
+
+@router.patch('/{task_id}/provide_edit', response_model = TaskPerms)
+async def provide_edit_permission(
+    task_id: str,
+    users: set,
+    user: User = Depends(current_user),
+    engine: AIOEngine = Depends(get_engine)
+):
+    await service.provide_edit(engine, user, task_id, users)
