@@ -1,7 +1,7 @@
 from odmantic import Model, Reference, Field, ObjectId
 from typing import Optional
 from app.users.models import User
-from app.users.schemas import UserRef
+from app.users.schemas import UserTask
 from pydantic import model_serializer
 # from datetime import datetime
 
@@ -11,8 +11,8 @@ class Task(Model):
     description: Optional[str] = None
     created_by: User = Reference()
     completed: bool = False
-    perms_read: set
-    perms_edit: set
+    perms_read: list
+    perms_edit: list
 
     @model_serializer
     def serialize(self) -> dict:
@@ -21,7 +21,7 @@ class Task(Model):
             "shortname": self.shortname,
             "description": self.description,
             "completed": self.completed,
-            "created_by": UserRef.from_user(self.created_by),
+            "created_by": UserTask.from_user(self.created_by),
             "perms_read": self.perms_read,
             "perms_edit": self.perms_edit
             
