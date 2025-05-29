@@ -45,6 +45,10 @@ class UserRef(BaseModel):
     id: str
     username: str
 
-    @classmethod
-    def from_user(cls, user: User) -> 'UserRef':
-        return cls(id=str(user.id), username=user.username)
+    @field_validator("id", mode="before")
+    def convert_id(cls, value):
+        return str(value)
+    
+    # @classmethod
+    # def from_user(cls, user: User) -> 'UserRef':
+    #     return cls(id=str(user.id), username=user.username)

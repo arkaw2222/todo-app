@@ -20,6 +20,8 @@ async def create_task(
             shortname=taskCreate.shortname,
             description=taskCreate.description,
             created_by=current_user,
+            perms_read=set(),
+            perms_edit=set()
         )
         await engine.save(task)
         return task

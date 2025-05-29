@@ -42,3 +42,6 @@ async def get_all_users(engine: AIOEngine) -> list[User]:
 
 async def get_user_by_username(engine: AIOEngine, username: str) -> User | None:
     return await engine.find_one(User, User.username == username)
+
+async def get_user_by_partusername(engine: AIOEngine, data: str, page: int) -> list:
+    return await engine.find(model = User, queries = User.username.match(f".*{data}.*"), limit = 20, skip = page*20) # type: ignore
