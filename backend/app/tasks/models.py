@@ -11,8 +11,8 @@ class Task(Model):
     description: Optional[str] = None
     created_by: User = Reference()
     completed: bool = False
-    perms_read: list
-    perms_edit: list
+    perms_read: list[str]
+    perms_edit: list[str]
 
     @model_serializer
     def serialize(self) -> dict:
