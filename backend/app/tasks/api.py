@@ -48,4 +48,4 @@ async def delete_task(
     engine: AIOEngine = Depends(get_engine),
     user: User = Depends(current_user)
 ):
-    await service.delete_task(engine, task_id, user)
+    await service.delete_task(engine, task_id, user)g
