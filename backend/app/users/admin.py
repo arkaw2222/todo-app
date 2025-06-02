@@ -8,7 +8,7 @@ class UserView(ModelView):
         'email',
         'age',
         'is_active',
-        'password'
+        'password',
     ]
 
     # async def before_create(self, request, data, obj):
