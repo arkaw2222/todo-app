@@ -17,7 +17,7 @@ print(os.getenv("MONGO_URL"))
 app = FastAPI()
 
 app.include_router(users_router)
-app.include_router(tasks_router)
+app.include_router(tasks_router)    
 app.include_router(auth_router)
 
 

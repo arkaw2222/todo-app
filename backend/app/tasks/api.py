@@ -51,8 +51,8 @@ async def delete_task(
     await service.delete_task(engine, task_id, user)
 
 
-@router.patch('/{task_id}/provide_read', response_model = TaskPerms)
-async def provide_read_permission(
+@router.patch('/{task_id}/change_read', response_model = TaskPerms)
+async def change_read_permission(
     task_id: str,
     users: list,
     user: User = Depends(current_user),
@@ -60,8 +60,8 @@ async def provide_read_permission(
 ):
     return await service.provide_read(engine, user, task_id, users)
 
-@router.patch('/{task_id}/provide_edit', response_model = TaskPerms)
-async def provide_edit_permission(
+@router.patch('/{task_id}/chandge_edit', response_model = TaskPerms)
+async def change_edit_permission(
     task_id: str,
     users: list,
     user: User = Depends(current_user),
