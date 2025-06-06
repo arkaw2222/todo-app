@@ -70,7 +70,7 @@ async def change_read_permission(
     return await service.change_read(engine, user, task_id, users)
 
 @router.patch('/{task_id}/change_edit')
-async def provide_edit_permission(
+async def change_edit_permission(
     task_id: str,
     users: list[str],
     user: User = Depends(current_user),
