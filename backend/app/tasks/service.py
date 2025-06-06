@@ -1,7 +1,7 @@
 from app.users.models import User
 from odmantic import AIOEngine
 from app.tasks.models import Task
-from .schemas import TaskCreate, TaskEdit, TaskRead
+from .schemas import TaskCreate, TaskEdit, TaskRead, TaskPerms
 import logging
 from fastapi import HTTPException
 from odmantic import ObjectId
@@ -80,9 +80,9 @@ async def delete_task(engine: AIOEngine, task_id: str, current_user: User) -> No
         logger.exception("Internal Server Error")
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
-async def provide_read(engine: AIOEngine, current_user: User, task_id: str, users: list) -> None:
+async def change_read(engine: AIOEngine, current_user: User, task_id: str, users: list[str]) -> None:
     try:
-        task = await engine.find_one(Task, Task.id == ObjectId(task_id))
+        task = await engine.find_one(Task, Task.id == task_id)
 
         if not task:
             raise HTTPException(404, 'Task not found')
@@ -91,15 +91,15 @@ async def provide_read(engine: AIOEngine, current_user: User, task_id: str, user
         # if users.issubset(task.perm_read):
         #     raise HTTPException(422, 'Already provided')
         
-        task.perms_read.extend(users)
+        task.perms_read = users
 
     except Exception as e:
         logger.exception('Internal Server Error')
         raise HTTPException(500, 'Internal Server Error')
 
-async def provide_edit(engine: AIOEngine, current_user: User, task_id: str, users: list) -> None:
+async def change_edit(engine: AIOEngine, current_user: User, task_id: str, users: list[str]) -> None:
     try:
-        task = await engine.find_one(Task, Task.id == ObjectId(task_id))
+        task = await engine.find_one(Task, Task.id == task_id)
 
         if not task:
             raise HTTPException(404, 'Task not found')
@@ -108,20 +108,20 @@ async def provide_edit(engine: AIOEngine, current_user: User, task_id: str, user
         # if users.issubset(task.perm_edit):
         #     raise HTTPException(422, 'Already provided')
         
-        task.perms_edit.extend(users)
+        task.perms_edit = users
 
     except Exception as e:
         logger.exception('Internal Server Error')
         raise HTTPException(500, 'Internal Server Error')
 
-async def get_task_permissions(engine: AIOEngine, task_id: str, current_user = User) -> Task:
+async def get_task_permissions(engine: AIOEngine, task_id: str, current_user = User) -> TaskPerms:
     try:
-        task = await engine.find_one(Task, Task.id == ObjectId(task_id))
+        task = await engine.find_one(Task, Task.id == task_id)
         if not task:
             raise HTTPException(404, 'Task not found')
         if task.created_by != current_user:
             raise HTTPException(403, 'Permission denied')
-        return task
+        return TaskPerms(**task.dict())
 
     except Exception as e:
         logger.exception('Internal Server Error')

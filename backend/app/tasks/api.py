@@ -51,26 +51,44 @@ async def delete_task(
     await service.delete_task(engine, task_id, user)
 
 
-@router.patch('/{task_id}/provide_read', response_model = TaskPerms)
-async def provide_read_permission(
+@router.patch('/{task_id}/provide_read')
+async def change_read_permission(
     task_id: str,
-    users: list,
+    users: list[str],
     user: User = Depends(current_user),
     engine: AIOEngine = Depends(get_engine)
-):
-    return await service.provide_read(engine, user, task_id, users)
+) -> None:
+    """
+    Note: list `users` will **OVERWRITE** current permissions
 
-@router.patch('/{task_id}/provide_edit', response_model = TaskPerms)
-async def provide_edit_permission(
+    Firstly get current permissions by router `get_task_permissions`
+
+    Secondary modify list `users`
+
+    Thirdly fill request body
+    """
+    return await service.change_read(engine, user, task_id, users)
+
+@router.patch('/{task_id}/provide_edit')
+async def change_edit_permission(
     task_id: str,
-    users: list,
+    users: list[str],
     user: User = Depends(current_user),
     engine: AIOEngine = Depends(get_engine)
-):
-    return await service.provide_edit(engine, user, task_id, users)
+) -> None:
+    """
+    Note: list `users` will **OVERWRITE** current permissions
+
+    Firstly get current permissions by router `get_task_permissions`
+
+    Secondary modify list `users`
+
+    Thirdly fill request body
+    """
+    return await service.change_edit(engine, user, task_id, users)
 
 
-@router.get('/{task_id}/get_perms', response_model = TaskPerms)
+@router.get('/{task_id}/get_perms')
 async def get_task_permissions(
     task_id: str,
     user: User = Depends(current_user),

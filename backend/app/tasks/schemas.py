@@ -46,5 +46,5 @@ class TaskEdit(BaseModel):
 class TaskPerms(BaseModel):
     id: str
     shortname: str
-    perms_read: list
-    perms_edit: list
+    perms_read: list[str]
+    perms_edit: list[str]
