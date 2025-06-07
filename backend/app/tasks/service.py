@@ -115,7 +115,9 @@ async def provide_edit(engine: AIOEngine, current_user: User, task_id: str, user
         raise HTTPException(500, 'Internal Server Error')
 
 
-    
+async def get_my_tasks(engine: AIOEngine, current_user: User) -> list[Task]:
+    return await engine.find(Task, Task.created_by == current_user)
+
 
 
 
