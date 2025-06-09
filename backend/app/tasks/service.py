@@ -20,8 +20,8 @@ async def create_task(
             shortname=taskCreate.shortname,
             description=taskCreate.description,
             created_by=current_user,
-            perms_read=set(),
-            perms_edit=set()
+            perms_read=[],
+            perms_edit=[]
         )
         await engine.save(task)
         return task
@@ -116,7 +116,7 @@ async def provide_edit(engine: AIOEngine, current_user: User, task_id: str, user
 
 
 async def get_my_tasks(engine: AIOEngine, current_user: User) -> list[Task]:
-    return await engine.find(Task, Task.created_by == current_user)
+    return await engine.find(Task, Task.created_by == current_user.id)
 
 
 
