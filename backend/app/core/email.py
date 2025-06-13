@@ -19,13 +19,13 @@ async def send_verification_code(email: str, code: str):
 
     message = MIMEMultipart()
     message["Subject"] = "Account Verification"
-    message["From"] = SMTP_USER
+    message["From"] = SMTP_USER #type: ignore
     message["To"] = email
     message.attach(MIMEText(html_content, 'html', 'utf-8'))
 
     try:
-        with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT) as server:
-            server.login(SMTP_USER, SMTP_PASSWORD)
-            server.sendmail(SMTP_USER, email, message.as_string())
+        with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT) as server: #type: ignore
+            server.login(SMTP_USER, SMTP_PASSWORD) #type: ignore
+            server.sendmail(SMTP_USER, email, message.as_string()) #type: ignore
     except Exception as e:
         raise RuntimeError(f"Email sending failed: {str(e)}")

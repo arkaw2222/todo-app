@@ -6,6 +6,7 @@ import logging
 from fastapi import HTTPException
 from odmantic import ObjectId
 from typing import cast
+from bson import ObjectId
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +20,7 @@ async def create_task(
         task = Task(
             shortname=taskCreate.shortname,
             description=taskCreate.description,
-            created_by=current_user,
+            created_by=await engine.find_one(User, User.username == current_user.username),
             perms_read=[],
             perms_edit=[]
         )
@@ -116,7 +117,12 @@ async def provide_edit(engine: AIOEngine, current_user: User, task_id: str, user
 
 
 async def get_my_tasks(engine: AIOEngine, current_user: User) -> list[Task]:
-    return await engine.find(Task, Task.created_by == current_user.id)
+    # user_id = current_user.id
+    # if isinstance(user_id, str):
+    #     user_id = ObjectId(user_id)
+    print(current_user)
+
+    return await engine.find(Task, Task.created_by == current_user)
 
 
 

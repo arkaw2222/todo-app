@@ -69,6 +69,7 @@ async def signup(engine: AIOEngine, userCreate: UserCreate) -> str:
     )
     user = await create_user(engine, u)
 
+
     if not user.verification_code:
         raise HTTPException(500, "Ошибка генерации кода")
     
