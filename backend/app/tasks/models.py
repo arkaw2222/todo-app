@@ -1,9 +1,8 @@
 from odmantic import Model, Reference, Field, ObjectId
 from typing import Optional
 from app.users.models import User
-from app.users.schemas import UserTask
+from app.users.schemas import UserRef
 from pydantic import model_serializer
-# from datetime import datetime
 
 class Task(Model):
     id: ObjectId = Field(primary_field=True, default_factory=ObjectId)
@@ -11,6 +10,8 @@ class Task(Model):
     description: Optional[str] = None
     created_by: User = Reference()
     completed: bool = False
+    perms_read: list[str]
+    perms_edit: list[str]
     perms_read: list[str]
     perms_edit: list[str]
 
@@ -21,16 +22,7 @@ class Task(Model):
             "shortname": self.shortname,
             "description": self.description,
             "completed": self.completed,
-            "created_by": UserTask.from_user(self.created_by),
+            "created_by": UserRef(id=str(self.created_by.id), username=self.created_by.username),
             "perms_read": self.perms_read,
             "perms_edit": self.perms_edit
-            
-            #(
-            #     {
-            #         "id": str(self.created_by.id),
-            #         "username": getattr(self.created_by, "username", None),
-            #     }
-            #     if isinstance(self.created_by, User)
-            #     else None
-            #)
         }

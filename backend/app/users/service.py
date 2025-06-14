@@ -5,6 +5,7 @@ from fastapi import HTTPException
 import logging
 from datetime import datetime, timedelta
 from random import randint
+from app.core.utils import hash_password
 
 
 logger = logging.getLogger(__name__)
@@ -18,7 +19,7 @@ async def create_user(engine: AIOEngine, userCreate: UserCreate) -> User:
         user = User(
             username = userCreate.username,
             email = userCreate.email,
-            password = userCreate.password,
+            password = await hash_password(userCreate.password),
             age = userCreate.age,
             is_active = True,
             verification_code = verification_code,

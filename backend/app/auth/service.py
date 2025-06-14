@@ -51,8 +51,6 @@ async def signin(engine: AIOEngine, credentials: SignIn) -> str:
 
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    # if not user.is_verified:
-    #     raise HTTPException(403, 'Account not verified')
     if not await verify_password(credentials.password, user.password):
         raise HTTPException(401, "Wrong password")
     return await jwt_generate(user.username)
@@ -69,9 +67,10 @@ async def signup(engine: AIOEngine, userCreate: UserCreate) -> str:
     )
     user = await create_user(engine, u)
 
+
     if not user.verification_code:
         raise HTTPException(500, "Ошибка генерации кода")
-    
+
     await send_verification_code(user.email, user.verification_code)
 
     return await signin(
@@ -107,13 +106,13 @@ async def verifyaccount(
     """
     if not user:
         raise HTTPException(404, "Not authorizated")
-    
+
     if user.is_verified:
         raise HTTPException(400, "Account is already verified")
-    
+
     if code.code != user.verification_code:
         raise HTTPException(400, "Invalid code")
-    
+
     if user.verification_code_expires < datetime.now():
         raise HTTPException(400, "Expired code")
 
